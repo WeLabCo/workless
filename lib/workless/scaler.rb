@@ -6,6 +6,7 @@ module Delayed
       autoload :HerokuCedar, "workless/scalers/heroku_cedar"
       autoload :Local,       "workless/scalers/local"
       autoload :Null,        "workless/scalers/null"
+      autoload :OfficeHoursWrapper, "workless/scalers/office_hours_wrapper"
 
       def self.included(base)
         base.send :extend, ClassMethods
@@ -14,7 +15,7 @@ module Delayed
             after_commit "self.class.scaler.down", :on => :update, :if => Proc.new {|r| !r.failed_at.nil? }
             after_commit "self.class.scaler.down", :on => :destroy, :if => Proc.new {|r| r.destroyed? or !r.failed_at.nil? }
             after_commit "self.class.scaler.up", :on => :create
-          end          
+          end
         elsif base.to_s =~ /Sequel/
           base.send(:define_method, 'after_destroy') do
             super
