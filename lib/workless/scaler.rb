@@ -45,6 +45,11 @@ module Delayed
           else
             Scaler::Local
           end
+          if ENV.include?('WORKLESS_CHECK_OFFICE_HOURS')
+            Scaler::OfficeHoursWrapper.scaler = @scaler
+            return Scaler::OfficeHoursWrapper
+          end
+          @scaler
         end
 
         def scaler=(scaler)
